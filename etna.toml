@@ -1,3 +1,5 @@
-name = "FSUB"
+name = "fsub-haskell"
 language = "Haskell"
 description = "System F-sub workload for Etna. Note: steps.json was seeded from BST and likely needs tuning before runs."
+
+mutations = []
