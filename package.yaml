@@ -1,4 +1,4 @@
-name: etna-workload
+name: etna-fsub
 
 dependencies:
     - base >= 4.7 && < 5
@@ -7,12 +7,14 @@ dependencies:
     - generic-random
     - smallcheck
     - leancheck
+    - hedgehog
+    - falsify
 
 library:
     source-dirs: src
 
 executables:
-    etna-workload:
+    fsub:
         main: Main.hs
         source-dirs: app
         ghc-options:
@@ -20,4 +22,4 @@ executables:
             - -rtsopts
             - -with-rtsopts=-N
         dependencies:
-            - etna-workload
+            - etna-fsub

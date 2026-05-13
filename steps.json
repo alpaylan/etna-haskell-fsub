@@ -18,20 +18,9 @@
     "solve": [
       {
         "Command": {
-          "command": "./bin/$workload",
+          "command": "./bin/fsub",
           "args": [
-            "{\"workload\": \"$workload\", \"strategy\": \"${strategy}\", \"property\": \"prop_$property\", \"timeout\": $timeout}"
-          ],
-          "run_at": "${workload_path}"
-        }
-      }
-    ],
-    "sample": [
-      {
-        "Command": {
-          "command": "./bin/$workload-sampler",
-          "args": [
-            "{\"sstrategy\": \"${strategy}\", \"sproperty\": \"prop_$property\", \"stests\": $tests}"
+            "{\"workload\": \"${workload}\", \"strategy\": \"${strategy}\", \"property\": \"prop_${property}\", \"timeout\": ${timeout}}"
           ],
           "run_at": "${workload_path}"
         }

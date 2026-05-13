@@ -35,6 +35,7 @@ tshift x (TVar y)
   {-!
   = TVar y
   -}
+  {- !-}
 tshift x (Arr ty1 ty2) = Arr (tshift x ty1) (tshift x ty2)
 tshift x (All ty1 ty2) =
   {-! -}
@@ -43,10 +44,11 @@ tshift x (All ty1 ty2) =
   {-!
   All (tshift x ty1) (tshift x ty2)
   -}
+  {- !-}
 
 shift :: Int -> Term -> Term
 shift x (Var y) = 
-  {-! -} 
+  {-! -}
   Var (if x <= y then 1 + y else y)
   {-!! shift_var_all -}
   {-!
@@ -56,13 +58,15 @@ shift x (Var y) =
   {-!
   Var y
   -}
-shift x (Abs ty1 t2) = 
-  {-! -} 
+  {- !-}
+shift x (Abs ty1 t2) =
+  {-! -}
   Abs ty1 (shift (1 + x) t2)
   {-!! shift_abs_no_incr -}
   {-!
   Abs ty1 (shift x t2)
   -}
+  {- !-}
 shift x (App t1 t2) = App (shift x t1) (shift x t2)
 shift x (TAbs ty1 t2) = TAbs ty1 (shift x t2)
 shift x (TApp t1 ty2) = TApp (shift x t1) ty2
@@ -71,13 +75,14 @@ shiftTyp :: Int -> Term -> Term
 shiftTyp _ t@(Var _) = t
 shiftTyp x (Abs ty1 t2) = Abs (tshift x ty1) (shiftTyp x t2)
 shiftTyp x (App t1 t2) = App (shiftTyp x t1) (shiftTyp x t2)
-shiftTyp x (TAbs ty1 t2) = 
+shiftTyp x (TAbs ty1 t2) =
   {-! -}
   TAbs (tshift x ty1) (shiftTyp (1 + x) t2)
   {-!! shift_typ_tabs_no_incr -}
-  {-! 
+  {-!
   TAbs (tshift x ty1) (shiftTyp x t2)
   -}
+  {- !-}
 shiftTyp x (TApp t1 ty2) = TApp (shiftTyp x t1) (tshift x ty2)
 
 tsubst :: Typ -> Int -> Typ -> Typ
@@ -105,14 +110,16 @@ tsubst (TVar y) x ty'
   | y == x = ty'
   | otherwise = TVar (y - 1)
   -}
+  {- !-}
 tsubst (Arr ty1 ty2) x ty' = Arr (tsubst ty1 x ty') (tsubst ty2 x ty')
-tsubst (All ty1 ty2) x ty' = 
+tsubst (All ty1 ty2) x ty' =
   {-! -}
   All (tsubst ty1 x ty') (tsubst ty2 (1 + x) (tshift 0 ty'))
   {-!! tsubst_all_no_tshift -}
-  {-! 
+  {-!
   All (tsubst ty1 x ty') (tsubst ty2 (1 + x) ty')
   -}
+  {- !-}
 
 subst :: Term -> Int -> Term -> Term
 subst (Var y) x t'
@@ -132,42 +139,46 @@ subst (Var y) x t'
   | y == x = t'
   | otherwise = Var y
   -}
-subst (Abs ty1 t2) x t' = 
+  {- !-}
+subst (Abs ty1 t2) x t' =
   {-! -}
   Abs ty1 (subst t2 (1 + x) (shift 0 t'))
   {-!! subst_abs_no_shift -}
-  {-! 
+  {-!
   Abs ty1 (subst t2 (1 + x) t')
   -}
   {-!! subst_abs_no_incr -}
-  {-! 
+  {-!
   Abs ty1 (subst t2 x (shift 0 t'))
-  -}  
+  -}
+  {- !-}
 subst (App t1 t2) x t' = App (subst t1 x t') (subst t2 x t')
-subst (TAbs ty1 t2) x t' = 
+subst (TAbs ty1 t2) x t' =
   {-! -}
   TAbs ty1 (subst t2 x (shiftTyp 0 t'))
   {-!! subst_tabs_no_shift -}
-  {-! 
+  {-!
   TAbs ty1 (subst t2 x t')
   -}
+  {- !-}
 subst (TApp t1 ty2) x t' = TApp (subst t1 x t') ty2
 
 substTyp :: Term -> Int -> Typ -> Term
 substTyp t@(Var _) _ _ = t
 substTyp (Abs ty1 t2) x ty = Abs (tsubst ty1 x ty) (substTyp t2 x ty)
 substTyp (App t1 t2) x ty = App (substTyp t1 x ty) (substTyp t2 x ty)
-substTyp (TAbs ty1 t2) x ty = 
+substTyp (TAbs ty1 t2) x ty =
   {-! -}
   TAbs (tsubst ty1 x ty) (substTyp t2 (1 + x) (tshift 0 ty))
   {-!! subst_typ_tabs_no_incr -}
-  {-! 
+  {-!
   TAbs (tsubst ty1 x ty) (substTyp t2 x (tshift 0 ty))
   -}
   {-!! subst_typ_tabs_no_shift -}
-  {-! 
+  {-!
   TAbs (tsubst ty1 x ty) (substTyp t2 (1 + x) ty)
   -}
+  {- !-}
 substTyp (TApp t1 ty2) x ty = TApp (substTyp t1 x ty) (tsubst ty2 x ty)
 
 -- stepping --

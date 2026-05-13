@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           etna-workload
+name:           etna-fsub
 version:        0.0.0
 build-type:     Simple
 
@@ -13,6 +13,8 @@ library
       Impl
       Spec
       Strategy.Correct
+      Strategy.Falsify
+      Strategy.Hedgehog
       Strategy.Lean
       Strategy.LeanRev
       Strategy.Quick
@@ -22,31 +24,35 @@ library
       Type
       Util
   other-modules:
-      Paths_etna_workload
+      Paths_etna_fsub
   hs-source-dirs:
       src
   build-depends:
       QuickCheck
     , base >=4.7 && <5
     , etna-lib
+    , falsify
     , generic-random
+    , hedgehog
     , leancheck
     , smallcheck
   default-language: Haskell2010
 
-executable etna-workload
+executable fsub
   main-is: Main.hs
   other-modules:
-      Paths_etna_workload
+      Paths_etna_fsub
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       QuickCheck
     , base >=4.7 && <5
+    , etna-fsub
     , etna-lib
-    , etna-workload
+    , falsify
     , generic-random
+    , hedgehog
     , leancheck
     , smallcheck
   default-language: Haskell2010

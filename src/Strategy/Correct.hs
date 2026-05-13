@@ -1,15 +1,27 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE TypeApplications #-}
 module Strategy.Correct where
 
 import Etna.Lib
+import GHC.Generics (Generic)
 import Impl (Term (..), Typ (..))
 import Spec
 import Test.QuickCheck hiding (Result)
 import Util
 
+deriving instance Generic Term
+deriving instance Generic Typ
+
+instance Arbitrary Typ where
+  shrink = genericShrink
+  arbitrary = genExactTyp 4 Empty
+
 instance Arbitrary Term where
+  shrink = genericShrink
   arbitrary = do
     let size = 4
     ty <- genExactTyp size Empty
@@ -216,7 +228,7 @@ tshift x (All ty1 ty2) =
 get = sample' (arbitrary @Term)
 
 $( mkStrategies
-     [|qcRunArb qcDefaults Correct|]
+     [|qcRunArb qcDefaults Naive|]
      [ 'prop_SinglePreserve,
        'prop_MultiPreserve
      ]

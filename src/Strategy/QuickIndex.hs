@@ -14,6 +14,7 @@ import Test.QuickCheck hiding (Result)
 deriving instance Generic Typ
 
 instance Arbitrary Typ where
+  shrink = genericShrink
   arbitrary =
     genericArbitraryRecG customInt (1 % 1 % 1 % 1 % ())
       `withBaseCase` return Top
@@ -24,6 +25,7 @@ instance Arbitrary Typ where
 deriving instance Generic Term
 
 instance Arbitrary Term where
+  shrink = genericShrink
   arbitrary =
     genericArbitraryRecG customInt (1 % 1 % 1 % 1 % 1 % ())
       `withBaseCase` return (Var 0)

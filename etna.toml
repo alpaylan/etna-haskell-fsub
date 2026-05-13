@@ -1,6 +1,17 @@
 name = "fsub-haskell"
 language = "Haskell"
 description = "System F-sub workload for Etna. Note: steps.json was seeded from BST and likely needs tuning before runs."
+strategies = [
+  "Correct",
+  "Falsify",
+  "Hedgehog",
+  "Lean",
+  "LeanRev",
+  "Quick",
+  "QuickIndex",
+  "Small",
+  "SmallRev",
+]
 
 mutations = [
   "shift_abs_no_incr",
